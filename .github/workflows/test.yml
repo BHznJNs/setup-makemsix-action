@@ -1,0 +1,30 @@
+name: Test Setup-makemsix.exe Action
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test-the-action:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run setup-makemsix action
+        uses: BHznJNs/setup-makemsix-action@release-1
+
+      - name: Verify makemsix installation
+        shell: pwsh
+        run: |
+          echo "--- Verifying files were extracted ---"
+          ls ${{ github.workspace }}\makemsix-tool
+
+          echo "--- Verifying makemsix is in PATH ---"
+          Get-Command makemsix.exe
+          
+          echo "--- Running makemsix command ---"
+          makemsix.exe -?
