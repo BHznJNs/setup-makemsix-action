@@ -1,0 +1,27 @@
+# action.yml
+name: 'Setup makemsix for Windows'
+description: 'An GitHub Actions used to initialize the makemsix executable in the Actions.'
+author: 'BHznJNs'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download makemsix.exe
+      uses: robinraju/release-downloader@v1
+      with:
+        repository: "BHznJNs/makemsix-build"
+        tag: "release-1"
+        fileName: "makemsix.zip"
+    
+    - name: Extract zip archive
+      shell: pwsh
+      run: |
+        $destinationPath = "${{ github.workspace }}\makemsix-tool"
+        New-Item -ItemType Directory -Path $destinationPath -Force
+        Expand-Archive -Path "${{ github.workspace }}\makemsix.zip" -DestinationPath $destinationPath -Force
+
+    - name: Add to PATH
+      shell: pwsh
+      run: |
+        $toolPath = "${{ github.workspace }}\makemsix-tool"
+        echo $toolPath | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
